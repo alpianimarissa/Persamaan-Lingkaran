@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Interaktif Persamaan & Kedudukan Lingkaran</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .tab-btn.active {
+            border-bottom-color: #2563eb;
+            color: #2563eb;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Sticky Navigation Header -->
+    <header class="sticky top-0 z-50 glass-card border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid fa-compact-disc text-xl animate-spin" style="animation-duration: 12s;"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-slate-900 leading-tight">Persamaan Lingkaran</h1>
+                        <p class="text-xs text-blue-600 font-medium">Matematika Lanjut SMA Kelas XII</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-4">
+                    <button onclick="switchTab('tujuan')" id="nav-tujuan" class="tab-btn active px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Tujuan & Aplikasi</button>
+                    <button onclick="switchTab('materi1')" id="nav-materi1" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Persamaan Baku & Umum</button>
+                    <button onclick="switchTab('materi2')" id="nav-materi2" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Kedudukan Titik & Garis</button>
+                    <button onclick="switchTab('materi3')" id="nav-materi3" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Garis Singgung & 2 Lingkaran</button>
+                    <button onclick="switchTab('simulasi')" id="nav-simulasi" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">
+                        <i class="fa-solid fa-chart-line text-blue-500 mr-1"></i> Simulator
+                    </button>
+                    <button onclick="switchTab('contoh')" id="nav-contoh" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Contoh Soal</button>
+                    <button onclick="switchTab('latihan')" id="nav-latihan" class="tab-btn px-3 py-2 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-blue-600 transition">Kuis Interaktif</button>
+                </nav>
+
+                <!-- Mobile menu button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <button onclick="switchTab('tujuan'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Tujuan & Aplikasi</button>
+            <button onclick="switchTab('materi1'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Persamaan Baku & Umum</button>
+            <button onclick="switchTab('materi2'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Kedudukan Titik & Garis</button>
+            <button onclick="switchTab('materi3'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Garis Singgung & 2 Lingkaran</button>
+            <button onclick="switchTab('simulasi'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Simulator Interaktif</button>
+            <button onclick="switchTab('contoh'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Contoh Soal & Pembahasan</button>
+            <button onclick="switchTab('latihan'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Kuis & Latihan Soal</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- TAB 1: TUJUAN & KONEKSI NYATA -->
+        <section id="tab-tujuan" class="tab-content block space-y-8 animate-fade-in">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-block bg-blue-500/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full border border-blue-400/30 mb-3">Modul Pembelajaran Interaktif</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Menguasai Geometri Lingkaran</h2>
+                    <p class="text-blue-100 text-base sm:text-lg leading-relaxed">
+                        Lingkaran bukan sekadar bentuk bundar sederhana! Dari jaringan GPS ponsel hingga orbit satelit, pemahaman tentang persamaan lingkaran dan kedudukan titik/garis adalah fondasi matematika modern modern.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-4">
+                        <button onclick="switchTab('materi1')" class="bg-white text-blue-700 hover:bg-blue-50 font-semibold px-5 py-2.5 rounded-xl transition shadow-md">Mulai Belajar Materi</button>
+                        <button onclick="switchTab('simulasi')" class="bg-blue-600/60 hover:bg-blue-600 text-white border border-blue-400/50 font-semibold px-5 py-2.5 rounded-xl transition">Buka Visualisator Grafik</button>
+                    </div>
+                </div>
+                <!-- Background Geometric Decoration -->
+                <div class="absolute -right-12 -bottom-12 opacity-20 pointer-events-none">
+                    <svg width="350" height="350" viewBox="0 0 200 200">
+                        <circle cx="100" cy="100" r="80" fill="none" stroke="white" stroke-width="4" stroke-dasharray="10 5" />
+                        <circle cx="100" cy="100" r="50" fill="none" stroke="white" stroke-width="6" />
+                        <line x1="20" y1="100" x2="180" y2="100" stroke="white" stroke-width="2" />
+                        <line x1="100" y1="20" x2="100" y2="180" stroke="white" stroke-width="2" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Learning Objectives Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">1. Persamaan Baku & Umum</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Mampu merumuskan persamaan lingkaran berpusat di $O(0,0)$ dan $P(a,b)$, serta menentukan pusat dan jari-jari dari bentuk umum $x^2 + y^2 + Ax + By + C = 0$.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-crosshairs"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">2. Analisis Kedudukan</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Menganalisis posisi titik (di dalam, pada, di luar) dan posisi garis terhadap lingkaran menggunakan aljabar diskriminan ($D$) maupun jarak geometri.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-bezier-curve"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-2">3. Garis Singgung & 2 Lingkaran</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        Menentukan Persamaan Garis Singgung (PGS) melalui gradien $m$, titik pada/di luar lingkaran (garis kutub), serta menganalisis relasi 2 lingkaran.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Real World Connection Showcase -->
+            <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+                <h3 class="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-earth-americas text-blue-600"></i> Koneksi Dunia Nyata (Real-World Applications)
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Application 1: Radar Aviation -->
+                    <div class="border border-slate-100 bg-slate-50 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-slate-800">1. Radar Navigasi & Penerbangan</h4>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-semibold">Radar Radius</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-4">
+                                Menara pemancar radar di bandara memancarkan jangkauan sinyal berbentuk lingkaran $(x-a)^2 + (y-b)^2 \le r^2$. Pesawat udara dipantau posisinya untuk memastikan tidak keluar dari zona aman.
+                            </p>
+                        </div>
+                        <!-- SVG Diagram Radar -->
+                        <div class="bg-slate-900 rounded-lg p-3 flex justify-center">
+                            <svg width="180" height="120" viewBox="0 0 180 120">
+                                <circle cx="90" cy="60" r="45" stroke="#10b981" stroke-width="1.5" fill="rgba(16, 185, 129, 0.1)" stroke-dasharray="3 3"/>
+                                <circle cx="90" cy="60" r="30" stroke="#10b981" stroke-width="1.5" fill="none"/>
+                                <circle cx="90" cy="60" r="15" stroke="#10b981" stroke-width="1.5" fill="none"/>
+                                <circle cx="90" cy="60" r="3" fill="#10b981"/>
+                                <line x1="90" y1="60" x2="125" y2="35" stroke="#34d399" stroke-width="2"/>
+                                <circle cx="110" cy="45" r="3" fill="#f43f5e"/>
+                                <text x="115" y="42" fill="#f43f5e" font-size="9" font-family="sans-serif">Pesawat (x,y)</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Application 2: GPS Triangulation -->
+                    <div class="border border-slate-100 bg-slate-50 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-slate-800">2. Triangulasi Sinyal GPS</h4>
+                                <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-semibold">Satelit GPS</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-4">
+                                Smartphone kamu menentukan lokasi presisi dengan mencari titik potong dari 3 lingkaran jangkuan satelit yang berpotongan di satu titik $(x, y)$.
+                            </p>
+                        </div>
+                        <!-- SVG Diagram GPS -->
+                        <div class="bg-slate-900 rounded-lg p-3 flex justify-center">
+                            <svg width="180" height="120" viewBox="0 0 180 120">
+                                <circle cx="70" cy="50" r="35" stroke="#6366f1" stroke-width="1.5" fill="none"/>
+                                <circle cx="110" cy="50" r="35" stroke="#ec4899" stroke-width="1.5" fill="none"/>
+                                <circle cx="90" cy="80" r="35" stroke="#eab308" stroke-width="1.5" fill="none"/>
+                                <circle cx="90" cy="60" r="4" fill="#38bdf8"/>
+                                <text x="96" y="64" fill="#38bdf8" font-size="9" font-weight="bold">Lokasi Kamu</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Application 3: Engineering Gears -->
+                    <div class="border border-slate-100 bg-slate-50 p-5 rounded-xl flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-bold text-slate-800">3. Roda Gigi & Garis Sabuk</h4>
+                                <span class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold">Teknik Mesin</span>
+                            </div>
+                            <p class="text-sm text-slate-600 mb-4">
+                                Sabuk mesin atau rantai sepeda dipasang menyinggung dua roda gigi ($R$ dan $r$). Konsep garis singgung luar dan dalam digunakan untuk menentukan panjang sabuk minimal.
+                            </p>
+                        </div>
+                        <!-- SVG Diagram Gears -->
+                        <div class="bg-slate-900 rounded-lg p-3 flex justify-center">
+                            <svg width="180" height="120" viewBox="0 0 180 120">
+                                <circle cx="50" cy="60" r="30" stroke="#38bdf8" stroke-width="2" fill="none"/>
+                                <circle cx="135" cy="60" r="18" stroke="#38bdf8" stroke-width="2" fill="none"/>
+                                <!-- Belt lines -->
+                                <line x1="50" y1="30" x2="135" y2="42" stroke="#f59e0b" stroke-width="2"/>
+                                <line x1="50" y1="90" x2="135" y2="78" stroke="#f59e0b" stroke-width="2"/>
+                                <circle cx="50" cy="60" r="3" fill="#cbd5e1"/>
+                                <circle cx="135" cy="60" r="3" fill="#cbd5e1"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MATERI 1 - PERSAMAAN LINGKARAN -->
+        <section id="tab-materi1" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Bagian 1</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Konsep Dasar & Persamaan Lingkaran</h2>
+                </div>
+
+                <!-- Concept Definition -->
+                <div class="bg-blue-50/70 border-l-4 border-blue-600 p-4 rounded-r-xl mb-6">
+                    <p class="text-sm text-blue-900 leading-relaxed font-medium">
+                        <strong>Definisi Geometris:</strong> Lingkaran adalah himpunan semua titik $(x,y)$ pada bidang datar yang berjarak sama (disebut <em>jari-jari</em> atau $r$) terhadap suatu titik tertentu (disebut <em>titik pusat</em> $P$).
+                    </p>
+                </div>
+
+                <!-- Forms Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Form 1: Pusat (0,0) -->
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition bg-white shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-slate-800 text-base">1. Pusat $O(0,0)$ & Jari-jari $r$</h3>
+                            <span class="text-xs bg-blue-100 text-blue-800 font-mono px-2 py-0.5 rounded">Bentuk Baku A</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">Berdasarkan Teorema Pythagoras pada segitiga siku-siku dengan alas $x$ dan tinggi $y$:</p>
+                        <div class="bg-slate-900 text-emerald-400 p-4 rounded-lg font-mono text-center text-lg my-2 shadow-inner">
+                            $$x^2 + y^2 = r^2$$
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-1 mt-3">
+                            <li><i class="fa-solid fa-check text-blue-500 mr-1.5"></i> Pusat: $(0,0)$</li>
+                            <li><i class="fa-solid fa-check text-blue-500 mr-1.5"></i> Jari-jari: $r = \sqrt{r^2}$</li>
+                        </ul>
+                    </div>
+
+                    <!-- Form 2: Pusat (a,b) -->
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-400 transition bg-white shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-bold text-slate-800 text-base">2. Pusat $P(a,b)$ & Jari-jari $r$</h3>
+                            <span class="text-xs bg-indigo-100 text-indigo-800 font-mono px-2 py-0.5 rounded">Bentuk Baku B</span>
+                        </div>
+                        <p class="text-xs text-slate-600 mb-3">Translasi sejauh titik $(a,b)$ dari titik asal:</p>
+                        <div class="bg-slate-900 text-emerald-400 p-4 rounded-lg font-mono text-center text-lg my-2 shadow-inner">
+                            $$(x - a)^2 + (y - b)^2 = r^2$$
+                        </div>
+                        <ul class="text-xs text-slate-600 space-y-1 mt-3">
+                            <li><i class="fa-solid fa-check text-indigo-500 mr-1.5"></i> Pusat: $P(a,b)$</li>
+                            <li><i class="fa-solid fa-check text-indigo-500 mr-1.5"></i> Jari-jari: $r = \sqrt{r^2}$</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Form 3: General Form -->
+                <div class="border border-slate-200 rounded-xl p-6 bg-slate-50 mb-8">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-slate-800 text-lg">3. Bentuk Umum Persamaan Lingkaran</h3>
+                        <span class="text-xs bg-purple-100 text-purple-800 font-mono px-2.5 py-1 rounded-full font-semibold">Bentuk Umum</span>
+                    </div>
+                    <p class="text-xs text-slate-600 mb-4">
+                        Jika $(x-a)^2 + (y-b)^2 = r^2$ dijabarkan, diperoleh persamaan kuadrat dua variabel:
+                    </p>
+                    <div class="bg-slate-900 text-purple-300 p-4 rounded-xl font-mono text-center text-xl shadow-inner mb-4">
+                        $$x^2 + y^2 + Ax + By + C = 0$$
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs mt-4">
+                        <div class="bg-white p-4 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-700 block mb-1">Menentukan Titik Pusat $P(a,b)$:</span>
+                            <div class="text-blue-600 font-mono text-sm">
+                                $$P\left( -\frac{1}{2}A, -\frac{1}{2}B \right)$$
+                            </div>
+                            <p class="text-slate-500 mt-1">di mana $a = -\frac{1}{2}A$ dan $b = -\frac{1}{2}B$</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-lg border border-slate-200">
+                            <span class="font-bold text-slate-700 block mb-1">Menentukan Jari-Jari ($r$):</span>
+                            <div class="text-emerald-600 font-mono text-sm">
+                                $$r = \sqrt{\left(-\frac{1}{2}A\right)^2 + \left(-\frac{1}{2}B\right)^2 - C} = \sqrt{a^2 + b^2 - C}$$
+                            </div>
+                            <p class="text-slate-500 mt-1">Catatan: Syarat lingkaran nyata adalah $a^2 + b^2 - C > 0$</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Cases Section -->
+                <h3 class="font-bold text-slate-900 text-lg mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-star text-amber-500"></i> Kasus-Kasus Khusus yang Sering Muncul
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Case 1 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-amber-600 font-bold text-sm mb-1">Menyinggung Sumbu X</div>
+                        <p class="text-xs text-slate-600 mb-2">Jika lingkaran $P(a,b)$ menyinggung sumbu X, maka jari-jarinya adalah mutlak ordinat pusat:</p>
+                        <div class="bg-slate-100 p-2 rounded text-center text-xs font-mono font-bold text-slate-800">
+                            $$r = |b|$$
+                        </div>
+                    </div>
+
+                    <!-- Case 2 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-amber-600 font-bold text-sm mb-1">Menyinggung Sumbu Y</div>
+                        <p class="text-xs text-slate-600 mb-2">Jika lingkaran $P(a,b)$ menyinggung sumbu Y, maka jari-jarinya adalah mutlak absis pusat:</p>
+                        <div class="bg-slate-100 p-2 rounded text-center text-xs font-mono font-bold text-slate-800">
+                            $$r = |a|$$
+                        </div>
+                    </div>
+
+                    <!-- Case 3 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-amber-600 font-bold text-sm mb-1">Diameter $A(x_1,y_1)$ & $B(x_2,y_2)$</div>
+                        <p class="text-xs text-slate-600 mb-2">Pusat di titik tengah $AB$, dan jari-jari setengah panjang garis $AB$:</p>
+                        <div class="bg-slate-100 p-2 rounded text-center text-xs font-mono font-bold text-slate-800">
+                            $$P\left(\frac{x_1+x_2}{2}, \frac{y_1+y_2}{2}\right)$$
+                        </div>
+                    </div>
+
+                    <!-- Case 4 -->
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="text-amber-600 font-bold text-sm mb-1">Menyinggung Garis $Ax+By+C=0$</div>
+                        <p class="text-xs text-slate-600 mb-2">Jari-jari $r$ adalah jarak titik pusat $P(a,b)$ ke garis tersebut:</p>
+                        <div class="bg-slate-100 p-2 rounded text-center text-xs font-mono font-bold text-slate-800">
+                            $$r = \left| \frac{Aa + Bb + C}{\sqrt{A^2 + B^2}} \right|$$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MATERI 2 - KEDUDUKAN TITIK & GARIS -->
+        <section id="tab-materi2" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Bagian 2</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Kedudukan Titik dan Garis Terhadap Lingkaran</h2>
+                </div>
+
+                <!-- Sub-section 1: Point Positions -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-dot-circle text-blue-600"></i> A. Kedudukan Titik $T(x_1, y_1)$ Terhadap Lingkaran
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Untuk mengetahui posisi titik $T(x_1, y_1)$, substitusikan koordinat $(x_1, y_1)$ ke ruas kiri persamaan lingkaran, lalu bandingkan hasilnya dengan $r^2$ atau $0$.
+                    </p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse border border-slate-200 rounded-xl overflow-hidden">
+                            <thead class="bg-slate-100 text-slate-700 font-bold">
+                                <tr>
+                                    <th class="p-3 border border-slate-200">Kedudukan Titik</th>
+                                    <th class="p-3 border border-slate-200">Pusat $O(0,0)$</th>
+                                    <th class="p-3 border border-slate-200">Pusat $P(a,b)$</th>
+                                    <th class="p-3 border border-slate-200">Bentuk Umum</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr class="bg-emerald-50/50">
+                                    <td class="p-3 font-semibold text-emerald-800">1. Di Dalam Lingkaran</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 < r^2$</td>
+                                    <td class="p-3 font-mono">$(x_1-a)^2 + (y_1-b)^2 < r^2$</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 + Ax_1 + By_1 + C < 0$</td>
+                                </tr>
+                                <tr class="bg-blue-50/50">
+                                    <td class="p-3 font-semibold text-blue-800">2. Pada Lingkaran (Tepi)</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 = r^2$</td>
+                                    <td class="p-3 font-mono">$(x_1-a)^2 + (y_1-b)^2 = r^2$</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 + Ax_1 + By_1 + C = 0$</td>
+                                </tr>
+                                <tr class="bg-rose-50/50">
+                                    <td class="p-3 font-semibold text-rose-800">3. Di Luar Lingkaran</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 > r^2$</td>
+                                    <td class="p-3 font-mono">$(x_1-a)^2 + (y_1-b)^2 > r^2$</td>
+                                    <td class="p-3 font-mono">$x_1^2 + y_1^2 + Ax_1 + By_1 + C > 0$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sub-section 2: Line Positions -->
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-slash text-indigo-600"></i> B. Kedudukan Garis $y = mx + c$ Terhadap Lingkaran
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Langkah penentuan: Substitusikan persamaan garis $y = mx + c$ ke dalam persamaan lingkaran sehingga terbentuk persamaan kuadrat satu variabel $ax^2 + bx + c = 0$. Kemudian periksa nilai <strong>Diskriminan ($D = b^2 - 4ac$)</strong>:
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Case D > 0 -->
+                        <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-emerald-900 text-lg">$D > 0$</span>
+                                <span class="text-xs bg-emerald-200 text-emerald-800 font-semibold px-2 py-0.5 rounded">2 Titik Potong</span>
+                            </div>
+                            <h4 class="font-bold text-emerald-800 text-sm mb-2">Garis Memotong Lingkaran</h4>
+                            <p class="text-xs text-emerald-700 mb-3">Garis menembus lingkaran di dua titik berbeda.</p>
+                            <div class="bg-white p-2 rounded flex justify-center">
+                                <svg width="120" height="80" viewBox="0 0 120 80">
+                                    <circle cx="60" cy="40" r="28" stroke="#059669" stroke-width="2" fill="none"/>
+                                    <line x1="15" y1="15" x2="105" y2="65" stroke="#047857" stroke-width="2"/>
+                                    <circle cx="38" cy="28" r="3" fill="#dc2626"/>
+                                    <circle cx="82" cy="52" r="3" fill="#dc2626"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Case D = 0 -->
+                        <div class="bg-amber-50 border border-amber-200 p-5 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-amber-900 text-lg">$D = 0$</span>
+                                <span class="text-xs bg-amber-200 text-amber-800 font-semibold px-2 py-0.5 rounded">1 Titik Singgung</span>
+                            </div>
+                            <h4 class="font-bold text-amber-800 text-sm mb-2">Garis Menyinggung Lingkaran</h4>
+                            <p class="text-xs text-amber-700 mb-3">Garis menyentuh lingkaran tepat di satu titik.</p>
+                            <div class="bg-white p-2 rounded flex justify-center">
+                                <svg width="120" height="80" viewBox="0 0 120 80">
+                                    <circle cx="60" cy="40" r="28" stroke="#d97706" stroke-width="2" fill="none"/>
+                                    <line x1="10" y1="68" x2="110" y2="68" stroke="#b45309" stroke-width="2"/>
+                                    <circle cx="60" cy="68" r="3" fill="#dc2626"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Case D < 0 -->
+                        <div class="bg-rose-50 border border-rose-200 p-5 rounded-xl">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-rose-900 text-lg">$D < 0$</span>
+                                <span class="text-xs bg-rose-200 text-rose-800 font-semibold px-2 py-0.5 rounded">Tidak Memotong</span>
+                            </div>
+                            <h4 class="font-bold text-rose-800 text-sm mb-2">Garis Saling Lepas</h4>
+                            <p class="text-xs text-rose-700 mb-3">Garis berada di luar dan tidak menyentuh lingkaran sama sekali.</p>
+                            <div class="bg-white p-2 rounded flex justify-center">
+                                <svg width="120" height="80" viewBox="0 0 120 80">
+                                    <circle cx="60" cy="40" r="24" stroke="#e11d48" stroke-width="2" fill="none"/>
+                                    <line x1="10" y1="75" x2="110" y2="75" stroke="#be123c" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: MATERI 3 - GARIS SINGGUNG & DUA LINGKARAN -->
+        <section id="tab-materi3" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Bagian 3</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Persamaan Garis Singgung (PGS) & Kedudukan Dua Lingkaran</h2>
+                </div>
+
+                <!-- PGS Section -->
+                <div class="mb-10">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-ruler text-purple-600"></i> A. Tiga Jenis Persamaan Garis Singgung (PGS)
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- Type 1: Given Gradient -->
+                        <div class="border border-slate-200 p-5 rounded-xl bg-slate-50">
+                            <h4 class="font-bold text-slate-800 mb-2 text-base">1. PGS yang Diketahui Gradiennya ($m$)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <span class="text-xs text-slate-500 font-semibold block mb-1">Pusat $O(0,0)$ & Jari-jari $r$:</span>
+                                    <div class="font-mono text-blue-700 font-bold">$$y = mx \pm r \sqrt{m^2 + 1}$$</div>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <span class="text-xs text-slate-500 font-semibold block mb-1">Pusat $P(a,b)$ & Jari-jari $r$:</span>
+                                    <div class="font-mono text-indigo-700 font-bold">$$y - b = m(x - a) \pm r \sqrt{m^2 + 1}$$</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type 2: Point on Circle -->
+                        <div class="border border-slate-200 p-5 rounded-xl bg-slate-50">
+                            <h4 class="font-bold text-slate-800 mb-2 text-base">2. PGS Melalui Titik $T(x_1, y_1)$ PADA Lingkaran (Rumus Bagi Adil)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <span class="text-xs text-slate-500 font-semibold block mb-1">Bentuk $x^2 + y^2 = r^2$:</span>
+                                    <div class="font-mono text-blue-700 font-bold text-sm">$$x_1 x + y_1 y = r^2$$</div>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <span class="text-xs text-slate-500 font-semibold block mb-1">Bentuk $(x-a)^2 + (y-b)^2 = r^2$:</span>
+                                    <div class="font-mono text-indigo-700 font-bold text-sm">$$(x_1-a)(x-a) + (y_1-b)(y-b) = r^2$$</div>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-slate-200">
+                                    <span class="text-xs text-slate-500 font-semibold block mb-1">Bentuk Umum $x^2+y^2+Ax+By+C=0$:</span>
+                                    <div class="font-mono text-purple-700 font-bold text-xs">$$x_1 x + y_1 y + \frac{A}{2}(x+x_1) + \frac{B}{2}(y+y_1) + C = 0$$</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type 3: Point Outside Circle -->
+                        <div class="border border-slate-200 p-5 rounded-xl bg-slate-50">
+                            <h4 class="font-bold text-slate-800 mb-2 text-base">3. PGS Melalui Titik $T(x_1, y_1)$ DI LUAR Lingkaran (Metode Garis Kutub)</h4>
+                            <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1 mt-2">
+                                <li>Substitusi titik $T(x_1, y_1)$ ke rumus bagi adil untuk membuat <strong>Persamaan Garis Kutub (Polar Line)</strong>.</li>
+                                <li>Substitusikan persamaan garis kutub ke dalam persamaan lingkaran untuk mendapatkan koordinat dua titik singgung ($T_1$ dan $T_2$).</li>
+                                <li>Gunakan rumus PGS pada titik $T_1$ dan $T_2$ untuk menemukan dua persamaan garis singgungnya.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Circles Relations Section -->
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circles-intersect text-emerald-600"></i> B. Kedudukan Dua Lingkaran ($L_1$ dan $L_2$)
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Misalkan lingkaran $M$ berpusat $P_1(a_1,b_1)$ berjari-jari $r$, dan lingkaran $N$ berpusat $P_2(a_2,b_2)$ berjari-jari $R$ ($R \ge r$). Jarak antara kedua titik pusat adalah $d = \sqrt{(a_1-a_2)^2 + (b_1-b_2)^2}$.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                        <!-- Rel 1 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-blue-700 text-sm block mb-1">1. Sepusat (Konsentris)</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$d = 0$</strong></p>
+                            <p class="text-slate-500">Pusat kedua lingkaran berimpit sempurna.</p>
+                        </div>
+
+                        <!-- Rel 2 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-indigo-700 text-sm block mb-1">2. Di Dalam Lingkaran</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$d < R - r$</strong></p>
+                            <p class="text-slate-500">Lingkaran kecil berada utuh di dalam lingkaran besar.</p>
+                        </div>
+
+                        <!-- Rel 3 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-amber-700 text-sm block mb-1">3. Bersinggungan Di Dalam</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$d = R - r$</strong></p>
+                            <p class="text-slate-500">Menyentuh di 1 titik di bagian dalam.</p>
+                        </div>
+
+                        <!-- Rel 4 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-emerald-700 text-sm block mb-1">4. Berpotongan</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$R - r < d < R + r$</strong></p>
+                            <p class="text-slate-500">Saling memotong di dua titik.</p>
+                        </div>
+
+                        <!-- Rel 5 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-teal-700 text-sm block mb-1">5. Bersinggungan Di Luar</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$d = R + r$</strong></p>
+                            <p class="text-slate-500">Saling menempel di luar di 1 titik.</p>
+                        </div>
+
+                        <!-- Rel 6 -->
+                        <div class="border border-slate-200 p-4 rounded-xl bg-white shadow-sm">
+                            <span class="font-bold text-rose-700 text-sm block mb-1">6. Saling Lepas (Di Luar)</span>
+                            <p class="text-slate-600 mb-2">Syarat: <strong class="font-mono text-slate-800">$d > R + r$</strong></p>
+                            <p class="text-slate-500">Berada saling terpisah di luar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: SIMULATOR INTERAKTIF GRAFIK LINGKARAN -->
+        <section id="tab-simulasi" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Eksplorasi Visual</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Simulator & Visualisator Grafik Interaktif</h2>
+                    </div>
+                    <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-semibold self-start sm:self-auto">Real-time Geometry Engine</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Controls Sidebar -->
+                    <div class="lg:col-span-4 space-y-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h3 class="font-bold text-slate-800 text-base border-b border-slate-200 pb-2">Parameter Lingkaran 1</h3>
+                        
+                        <!-- Center A (X) -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Pusat X ($a$):</span>
+                                <span id="val-a" class="font-mono text-blue-600 font-bold">0</span>
+                            </div>
+                            <input type="range" id="input-a" min="-8" max="8" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+                        </div>
+
+                        <!-- Center B (Y) -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Pusat Y ($b$):</span>
+                                <span id="val-b" class="font-mono text-blue-600 font-bold">0</span>
+                            </div>
+                            <input type="range" id="input-b" min="-8" max="8" step="0.5" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+                        </div>
+
+                        <!-- Radius R -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Jari-Jari ($r$):</span>
+                                <span id="val-r" class="font-mono text-blue-600 font-bold">4</span>
+                            </div>
+                            <input type="range" id="input-r" min="1" max="10" step="0.5" value="4" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateSim()">
+                        </div>
+
+                        <hr class="border-slate-200">
+
+                        <h3 class="font-bold text-slate-800 text-base border-b border-slate-200 pb-2">Uji Titik $T(x_1, y_1)$</h3>
+                        <!-- Point X1 -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Titik Uji $X_1$:</span>
+                                <span id="val-px" class="font-mono text-emerald-600 font-bold">3</span>
+                            </div>
+                            <input type="range" id="input-px" min="-10" max="10" step="0.5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600" oninput="updateSim()">
+                        </div>
+
+                        <!-- Point Y1 -->
+                        <div>
+                            <div class="flex justify-between text-xs font-medium text-slate-700 mb-1">
+                                <span>Titik Uji $Y_1$:</span>
+                                <span id="val-py" class="font-mono text-emerald-600 font-bold">3</span>
+                            </div>
+                            <input type="range" id="input-py" min="-10" max="10" step="0.5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600" oninput="updateSim()">
+                        </div>
+                    </div>
+
+                    <!-- Canvas Graphic Output & Dynamic Equations -->
+                    <div class="lg:col-span-8 flex flex-col space-y-4">
+                        <div class="relative bg-slate-900 rounded-2xl p-2 border border-slate-800 shadow-inner flex items-center justify-center overflow-hidden">
+                            <canvas id="simCanvas" width="500" height="400" class="w-full max-w-full h-auto rounded-xl"></canvas>
+                        </div>
+
+                        <!-- Dynamic Equations Output Box -->
+                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+                            <div>
+                                <span class="text-xs text-slate-500 font-semibold block">Persamaan Baku Lingkaran:</span>
+                                <div id="calc-baku" class="font-mono text-blue-700 font-bold text-sm sm:text-base">$(x - 0)^2 + (y - 0)^2 = 16$</div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500 font-semibold block">Persamaan Umum Lingkaran:</span>
+                                <div id="calc-umum" class="font-mono text-purple-700 font-bold text-sm sm:text-base">$x^2 + y^2 - 16 = 0$</div>
+                            </div>
+                            <div class="p-3 rounded-lg bg-white border border-slate-200">
+                                <span class="text-xs text-slate-500 font-semibold block">Hasil Analisis Kedudukan Titik $T$:</span>
+                                <div id="calc-status" class="text-sm font-bold text-emerald-700 mt-1">Titik T(3, 3) berada DI DALAM lingkaran.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: CONTOH SOAL & PEMBAHASAN -->
+        <section id="tab-contoh" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6">
+                    <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Latihan Lengkap PDF</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Contoh Soal Pembahasan Berdasarkan Materi PDF</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Example 1 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <div class="bg-slate-100 px-5 py-3 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Contoh 1: Pusat $(a,b)$ & Menyinggung Sumbu X (PDF 1 Page 3)</span>
+                            <span class="bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded">Persamaan</span>
+                        </div>
+                        <div class="p-5 text-sm space-y-3">
+                            <p class="font-semibold text-slate-900">Soal: Tentukan persamaan lingkaran yang berpusat di $(-1, 2)$ dan menyinggung sumbu X!</p>
+                            <div class="bg-slate-50 p-4 rounded-lg font-mono text-xs space-y-2 border border-slate-200">
+                                <p class="text-slate-600"><strong>Pembahasan:</strong></p>
+                                <p>1. Menyinggung sumbu X $\Rightarrow$ Jari-jari $r = |b| = |2| = 2$.</p>
+                                <p>2. Substitusi ke bentuk baku $(x-a)^2 + (y-b)^2 = r^2$ dengan pusat $(-1,2)$:</p>
+                                <p class="text-blue-700 font-bold">$(x - (-1))^2 + (y - 2)^2 = 2^2 \Rightarrow (x + 1)^2 + (y - 2)^2 = 4$</p>
+                                <p>3. Jabarkan ke bentuk umum:</p>
+                                <p>$x^2 + 2x + 1 + y^2 - 4y + 4 - 4 = 0$</p>
+                                <p class="text-emerald-700 font-bold">$x^2 + y^2 + 2x - 4y + 1 = 0$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example 2 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <div class="bg-slate-100 px-5 py-3 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Contoh 2: Diameter Garis dari 2 Titik (PDF 1 Page 4)</span>
+                            <span class="bg-blue-200 text-blue-800 text-xs px-2 py-0.5 rounded">Persamaan</span>
+                        </div>
+                        <div class="p-5 text-sm space-y-3">
+                            <p class="font-semibold text-slate-900">Soal: Tentukan persamaan lingkaran jika titik $A(-7,5)$ dan $B(-1,3)$ merupakan diameter lingkaran!</p>
+                            <div class="bg-slate-50 p-4 rounded-lg font-mono text-xs space-y-2 border border-slate-200">
+                                <p class="text-slate-600"><strong>Pembahasan:</strong></p>
+                                <p>1. Cari Titik Pusat (Titik Tengah $AB$):</p>
+                                <p>$P\left(\frac{-7+(-1)}{2}, \frac{5+3}{2}\right) = P(-4, 4)$</p>
+                                <p>2. Cari Panjang Jari-jari ($r = \frac{1}{2} d$):</p>
+                                <p>$r = \frac{1}{2}\sqrt{(-1 - (-7))^2 + (3 - 5)^2} = \frac{1}{2}\sqrt{6^2 + (-2)^2} = \frac{1}{2}\sqrt{40} = \sqrt{10}$</p>
+                                <p>3. Persamaan Lingkaran:</p>
+                                <p class="text-emerald-700 font-bold">$(x - (-4))^2 + (y - 4)^2 = (\sqrt{10})^2 \Rightarrow (x+4)^2 + (y-4)^2 = 10$</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example 3 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <div class="bg-slate-100 px-5 py-3 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Contoh 3: Kedudukan Garis terhadap Lingkaran (PDF 2 Page 3)</span>
+                            <span class="bg-indigo-200 text-indigo-800 text-xs px-2 py-0.5 rounded">Kedudukan</span>
+                        </div>
+                        <div class="p-5 text-sm space-y-3">
+                            <p class="font-semibold text-slate-900">Soal: Tentukan kedudukan garis $y = 3x + 2$ terhadap lingkaran $x^2 + y^2 = 10$!</p>
+                            <div class="bg-slate-50 p-4 rounded-lg font-mono text-xs space-y-2 border border-slate-200">
+                                <p class="text-slate-600"><strong>Pembahasan:</strong></p>
+                                <p>1. Substitusikan $y = 3x + 2$ ke $x^2 + y^2 = 10$:</p>
+                                <p>$x^2 + (3x + 2)^2 = 10 \Rightarrow x^2 + 9x^2 + 12x + 4 - 10 = 0$</p>
+                                <p>$10x^2 + 12x - 6 = 0 \quad (\text{bagi } 2) \Rightarrow 5x^2 + 6x - 3 = 0$</p>
+                                <p>2. Hitung Diskriminan ($D = b^2 - 4ac$) dengan $a=5, b=6, c=-3$:</p>
+                                <p>$D = 6^2 - 4(5)(-3) = 36 + 60 = 96$</p>
+                                <p class="text-emerald-700 font-bold">3. Karena $D = 96 > 0$, maka garis tersebut MEMOTONG lingkaran di dua titik.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example 4 -->
+                    <div class="border border-slate-200 rounded-xl overflow-hidden">
+                        <div class="bg-slate-100 px-5 py-3 font-bold text-slate-800 text-sm flex justify-between items-center">
+                            <span>Contoh 4: PGS Melalui Titik di Luar Lingkaran (PDF 2 Page 6-7)</span>
+                            <span class="bg-purple-200 text-purple-800 text-xs px-2 py-0.5 rounded">Garis Singgung</span>
+                        </div>
+                        <div class="p-5 text-sm space-y-3">
+                            <p class="font-semibold text-slate-900">Soal: Tentukan persamaan garis singgung lingkaran $x^2 + y^2 = 225$ yang melalui titik $(15, -5)$ di luar lingkaran!</p>
+                            <div class="bg-slate-50 p-4 rounded-lg font-mono text-xs space-y-2 border border-slate-200">
+                                <p class="text-slate-600"><strong>Pembahasan:</strong></p>
+                                <p>1. Uji Titik: $15^2 + (-5)^2 = 225 + 25 = 250 > 225$ (Terbukti di Luar Lingkaran).</p>
+                                <p>2. Buat Persamaan Garis Kutub di titik $(15, -5)$:</p>
+                                <p>$x_1 x + y_1 y = 225 \Rightarrow 15x - 5y = 225 \quad (\text{bagi } 5) \Rightarrow 3x - y = 45 \Rightarrow y = 3x - 45$</p>
+                                <p>3. Substitusi $y = 3x - 45$ ke $x^2 + y^2 = 225$:</p>
+                                <p>$x^2 + (3x - 45)^2 = 225 \Rightarrow 10x^2 - 270x + 1800 = 0 \quad (\text{bagi } 10) \Rightarrow x^2 - 27x + 180 = 0$</p>
+                                <p>$(x - 15)(x - 12) = 0 \Rightarrow x_1 = 15$ atau $x_2 = 12$</p>
+                                <p>4. Dapatkan Titik Singgung:</p>
+                                <p>• $x = 15 \Rightarrow y = 3(15) - 45 = 0 \Rightarrow T_1(15, 0)$</p>
+                                <p>• $x = 12 \Rightarrow y = 3(12) - 45 = -9 \Rightarrow T_2(12, -9)$</p>
+                                <p>5. Buat PGS di masing-masing titik singgung:</p>
+                                <p class="text-emerald-700 font-bold">• Di $T_1(15, 0) \Rightarrow 15x = 225 \Rightarrow x = 15$</p>
+                                <p class="text-emerald-700 font-bold">• Di $T_2(12, -9) \Rightarrow 12x - 9y = 225 \quad (\text{bagi } 3) \Rightarrow 4x - 3y = 75$</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: KUIS & LATIHAN SOAL INTERAKTIF -->
+        <section id="tab-latihan" class="tab-content hidden space-y-8">
+            <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="border-b border-slate-200 pb-4 mb-6 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Evaluasi Pemahaman</span>
+                        <h2 class="text-2xl font-bold text-slate-900">Kuis & Latihan Soal Interaktif</h2>
+                    </div>
+                    <div id="score-badge" class="hidden bg-blue-100 text-blue-800 font-bold px-4 py-2 rounded-xl text-sm">
+                        Skor: <span id="score-val">0</span> / 5
+                    </div>
+                </div>
+
+                <!-- Quiz Form Container -->
+                <div id="quiz-container" class="space-y-8">
+                    <!-- Q1 -->
+                    <div class="quiz-card border border-slate-200 p-5 rounded-xl bg-slate-50 space-y-3" id="q1">
+                        <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase">Soal 1 (PDF 1 Page 5)</div>
+                        <p class="font-semibold text-slate-800 text-sm">Pusat $P(a,b)$ dan jari-jari $r$ dari persamaan lingkaran $4x^2 + 4y^2 + 4x - 12y + 1 = 0$ adalah...</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q1" value="A" class="mr-2.5"> A. $P(-1, 3)$ dan $r = 3$
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q1" value="B" class="mr-2.5"> B. $P\left(-\frac{1}{2}, \frac{3}{2}\right)$ dan $r = \frac{3}{2}$
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q1" value="C" class="mr-2.5"> C. $P\left(\frac{1}{2}, -\frac{3}{2}\right)$ dan $r = \frac{9}{4}$
+                            </label>
+                        </div>
+                        <div class="feedback hidden text-xs p-3 rounded-lg mt-2"></div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="quiz-card border border-slate-200 p-5 rounded-xl bg-slate-50 space-y-3" id="q2">
+                        <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase">Soal 2 (PDF 2 Page 1)</div>
+                        <p class="font-semibold text-slate-800 text-sm">Kedudukan titik $(0, -5)$ terhadap lingkaran $x^2 + y^2 - 3x + 4y - 10 = 0$ adalah...</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q2" value="A" class="mr-2.5"> A. Terletak di luar lingkaran
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q2" value="B" class="mr-2.5"> B. Terletak pada lingkaran (tepi)
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q2" value="C" class="mr-2.5"> C. Terletak di dalam lingkaran
+                            </label>
+                        </div>
+                        <div class="feedback hidden text-xs p-3 rounded-lg mt-2"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="quiz-card border border-slate-200 p-5 rounded-xl bg-slate-50 space-y-3" id="q3">
+                        <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase">Soal 3 (PDF 2 Page 5)</div>
+                        <p class="font-semibold text-slate-800 text-sm">Persamaan Garis Singgung Lingkaran $x^2 + y^2 = 17$ pada titik $(-1, 4)$ adalah...</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q3" value="A" class="mr-2.5"> A. $x - 4y + 17 = 0$
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q3" value="B" class="mr-2.5"> B. $-x - 4y + 17 = 0$
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q3" value="C" class="mr-2.5"> C. $4x - y + 17 = 0$
+                            </label>
+                        </div>
+                        <div class="feedback hidden text-xs p-3 rounded-lg mt-2"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="quiz-card border border-slate-200 p-5 rounded-xl bg-slate-50 space-y-3" id="q4">
+                        <div class="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase">Soal 4 (PDF 2 Page 10)</div>
+                        <p class="font-semibold text-slate-800 text-sm">Kedudukan lingkaran $L_1: x^2 + (y-2)^2 = 16$ terhadap lingkaran $L_2: (x-3)^2 + (y-2)^2 = 1$ adalah...</p>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q4" value="A" class="mr-2.5"> A. Saling memotong di dua titik
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q4" value="B" class="mr-2.5"> B. Bersinggungan di dalam
+                            </label>
+                            <label class="flex items-center p-2.5 bg-white border border-slate-200 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                <input type="radio" name="q4" value="C" class="mr-2.5"> C. Lingkaran $L_2$ terletak di dalam lingkaran $L_1$
+                            </label>
+                        </div>
+                        <div class="feedback hidden text-xs p-3 rounded-lg mt-2"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button onclick="submitQuiz()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition shadow-md">
+                        Cek Jawaban & Pembahasan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 border-t border-slate-800 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs">
+            <p class="mb-1">Modul Pembelajaran Interaktif Persamaan Lingkaran & Kedudukan Titik/Garis/Lingkaran</p>
+            <p class="text-slate-500">Dikembangkan berdasarkan Silabus Matematika Lanjut Kelas XII</p>
+        </div>
+    </footer>
+
+    <!-- Interactive JavaScript Engine -->
+    <script>
+        // Tab Navigation Switcher
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            
+            // Remove active style from all nav buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab content
+            const targetContent = document.getElementById('tab-' + tabId);
+            if (targetContent) targetContent.classList.remove('hidden');
+
+            // Highlight nav button
+            const targetNav = document.getElementById('nav-' + tabId);
+            if (targetNav) targetNav.classList.add('active');
+
+            // Re-render math formulas if needed
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+
+            // Trigger simulator update if switching to simulator tab
+            if (tabId === 'simulasi') {
+                updateSim();
+            }
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Interactive Geometry Canvas Engine
+        function updateSim() {
+            const a = parseFloat(document.getElementById('input-a').value);
+            const b = parseFloat(document.getElementById('input-b').value);
+            const r = parseFloat(document.getElementById('input-r').value);
+            const px = parseFloat(document.getElementById('input-px').value);
+            const py = parseFloat(document.getElementById('input-py').value);
+
+            // Update Label Text
+            document.getElementById('val-a').innerText = a;
+            document.getElementById('val-b').innerText = b;
+            document.getElementById('val-r').innerText = r;
+            document.getElementById('val-px').innerText = px;
+            document.getElementById('val-py').innerText = py;
+
+            // Render Baku Form Text
+            const aSign = a >= 0 ? `- ${a}` : `+ ${Math.abs(a)}`;
+            const bSign = b >= 0 ? `- ${b}` : `+ ${Math.abs(b)}`;
+            document.getElementById('calc-baku').innerText = `(x ${aSign})^2 + (y ${bSign})^2 = ${r * r}`;
+
+            // Render Umum Form Text (x^2 + y^2 - 2ax - 2by + a^2+b^2-r^2 = 0)
+            const A = -2 * a;
+            const B = -2 * b;
+            const C = (a * a) + (b * b) - (r * r);
+            
+            let umumStr = "x² + y² ";
+            if (A !== 0) umumStr += (A > 0 ? `+ ${A}x ` : `- ${Math.abs(A)}x `);
+            if (B !== 0) umumStr += (B > 0 ? `+ ${B}y ` : `- ${Math.abs(B)}y `);
+            if (C !== 0) umumStr += (C > 0 ? `+ ${C}` : `- ${Math.abs(C)}`);
+            umumStr += " = 0";
+            document.getElementById('calc-umum').innerText = umumStr;
+
+            // Calculate Point Position Status
+            const distSq = (px - a) * (px - a) + (py - b) * (py - b);
+            const rSq = r * r;
+            const statusEl = document.getElementById('calc-status');
+
+            if (Math.abs(distSq - rSq) < 0.001) {
+                statusEl.innerText = `Titik T(${px}, ${py}) berada TEPAT PADA lingkaran (Tepi).`;
+                statusEl.className = "text-sm font-bold text-blue-700 mt-1";
+            } else if (distSq < rSq) {
+                statusEl.innerText = `Titik T(${px}, ${py}) berada DI DALAM lingkaran.`;
+                statusEl.className = "text-sm font-bold text-emerald-700 mt-1";
+            } else {
+                statusEl.innerText = `Titik T(${px}, ${py}) berada DI LUAR lingkaran.`;
+                statusEl.className = "text-sm font-bold text-rose-700 mt-1";
+            }
+
+            // Draw Canvas Graph
+            const canvas = document.getElementById('simCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const scale = 20; // 20px = 1 unit
+
+            // Clear Background
+            ctx.fillStyle = '#0f172a'; // slate-900
+            ctx.fillRect(0, 0, w, h);
+
+            // Origin in Center of Canvas
+            const originX = w / 2;
+            const originY = h / 2;
+
+            // Draw Grid Lines
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+
+            for (let x = 0; x < w; x += scale) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+            }
+            for (let y = 0; y < h; y += scale) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+            }
+
+            // Draw Main Axes X and Y
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, originY); ctx.lineTo(w, originY); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(originX, 0); ctx.lineTo(originX, h); ctx.stroke();
+
+            // Transform Coordinates Function
+            function toCanvasX(x) { return originX + x * scale; }
+            function toCanvasY(y) { return originY - y * scale; }
+
+            // Draw Circle
+            const cx = toCanvasX(a);
+            const cy = toCanvasY(b);
+            const cr = r * scale;
+
+            ctx.strokeStyle = '#3b82f6'; // blue-500
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(cx, cy, cr, 0, 2 * Math.PI);
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.15)';
+            ctx.fill();
+            ctx.stroke();
+
+            // Draw Center Point P
+            ctx.fillStyle = '#60a5fa';
+            ctx.beginPath();
+            ctx.arc(cx, cy, 5, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Label Center
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = '11px sans-serif';
+            ctx.fillText(`P(${a}, ${b})`, cx + 8, cy - 8);
+
+            // Draw Test Point T
+            const tx = toCanvasX(px);
+            const ty = toCanvasY(py);
+
+            ctx.fillStyle = distSq > rSq ? '#f43f5e' : (distSq < rSq ? '#10b981' : '#38bdf8');
+            ctx.beginPath();
+            ctx.arc(tx, ty, 6, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Label Test Point T
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText(`T(${px}, ${py})`, tx + 8, ty - 8);
+
+            // Draw Radius Line from Center P to Test Point T
+            ctx.strokeStyle = '#94a3b8';
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(tx, ty);
+            ctx.stroke();
+            ctx.setLineDash([]); // Reset line dash
+        }
+
+        // Quiz Evaluation Function
+        function submitQuiz() {
+            const answers = {
+                q1: 'B',
+                q2: 'C',
+                q3: 'A',
+                q4: 'C'
+            };
+
+            const explanations = {
+                q1: "Bagi persamaan dengan 4: x² + y² + x - 3y + 1/4 = 0. Pusat P(-1/2, 3/2). Jari-jari r = √((-1/2)² + (3/2)² - 1/4) = √(1/4 + 9/4 - 1/4) = √(9/4) = 3/2.",
+                q2: "Substitusi (0, -5): 0² + (-5)² - 3(0) + 4(-5) - 10 = 25 - 20 - 10 = -5 < 0. Karena nilainya negatif (<0), titik berada DI DALAM lingkaran.",
+                q3: "Rumus bagi adil x₁x + y₁y = r² dengan titik (-1,4) dan r²=17: -1(x) + 4(y) = 17 => -x + 4y = 17 => x - 4y + 17 = 0.",
+                q4: "Pusat L₁ P₁(0,2) r₁=4. Pusat L₂ P₂(3,2) r₂=1. Jarak d = √((3-0)² + (2-2)²) = 3. Nilai R-r = 4-1 = 3. Karena d = R-r (3 = 3), maka L₂ menyinggung/terletak di dalam L₁."
+            };
+
+            let score = 0;
+            const total = 4;
+
+            for (let i = 1; i <= total; i++) {
+                const qKey = 'q' + i;
+                const selected = document.querySelector(`input[name="${qKey}"]:checked`);
+                const qCard = document.getElementById(qKey);
+                const feedback = qCard.querySelector('.feedback');
+
+                feedback.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800');
+
+                if (selected && selected.value === answers[qKey]) {
+                    score++;
+                    feedback.classList.add('bg-emerald-100', 'text-emerald-800');
+                    feedback.innerHTML = `<strong>Jawaban Benar!</strong> ${explanations[qKey]}`;
+                } else {
+                    feedback.classList.add('bg-rose-100', 'text-rose-800');
+                    feedback.innerHTML = `<strong>Jawaban Belum Tepat.</strong> Jawaban yang benar adalah <strong>${answers[qKey]}</strong>.<br>${explanations[qKey]}`;
+                }
+            }
+
+            // Display Score Badge
+            const scoreBadge = document.getElementById('score-badge');
+            document.getElementById('score-val').innerText = score;
+            scoreBadge.classList.remove('hidden');
+        }
+
+        // Initialize on Page Load
+        window.onload = function() {
+            if (window.renderMathInElement) {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+            updateSim();
+        };
+    </script>
+</body>
+</html>
